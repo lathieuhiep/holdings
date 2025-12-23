@@ -1,10 +1,10 @@
 (function($) {
-	"use strict";
-	window.isIE = /(MSIE|Trident\/|Edge\/)/i.test(navigator.userAgent);
-	window.windowHeight = window.innerHeight;
-	window.windowWidth = window.innerWidth;
-	
-	// Returns a function, that, as long as it continues to be invoked, will not
+    "use strict";
+    window.isIE = /(MSIE|Trident\/|Edge\/)/i.test(navigator.userAgent);
+    window.windowHeight = window.innerHeight;
+    window.windowWidth = window.innerWidth;
+
+    // Returns a function, that, as long as it continues to be invoked, will not
     // be triggered. The function will be called after it stops being called for
     // N milliseconds. If `immediate` is passed, trigger the function on the
     // leading edge, instead of the trailing.
@@ -25,11 +25,7 @@
         // history.scrollRestoration = 'auto';
     }
 
-    // setTimeout(function() {
-    //     window.scrollTo({ top: 0, behavior: 'smooth' })
-    // });
-    
-    gsap.registerPlugin(ScrollTrigger, TextPlugin, SplitText);
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, TextPlugin);
 
     $.fn.numberTextLine = function(opts) {
         $(this).each( function () {
@@ -62,7 +58,6 @@
 
                 el.css({
                     'display': 'block',
-                    'display': '-webkit-box',
                     'height': overflow,
                     '-webkit-line-clamp': String(options.numberLine),
                     '-webkit-box-orient': 'vertical',
@@ -95,10 +90,9 @@
                         $(_this).html('0'+value.toFixed(options.decimals));
                     }
                 } else {
-                    console.log(value);
                     $(_this).html(value.toFixed(options.decimals).toString().replace('.', options.break));
                 }
-                                
+
                 if (typeof(options.onUpdate) == 'function') {
                     options.onUpdate.call(_this, value);
                 }
@@ -139,33 +133,30 @@
             if (callNow) func.apply(context, args);
         };
     };
-    
+
     const ww = $(window).width();
     const wh = $(window).height();
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const update = (time, deltaTime, frame) => {
-        lenis.raf(time * 1000)
-    }
     const resize = (e) => {
         ScrollTrigger.refresh();
     }
     const lenis = new Lenis({
-        duration: 1,
+        duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        // smoothTouch: false,
-        // mouseMultiplier: 1,
-        // touchMultiplier: 1,
-        // smoothTouch: false,
-        // syncTouch: true,
-        // syncTouchLerp: 0.1,
-        // touchMultiplier: 1.5
+        // syncTouch: true,   // Đồng bộ với touch native
+        // syncTouchLerp: 0.075,  // Lerp cho inertia touch
+        // touchInertiaExponent: 1.7,  // Độ mạnh inertia touch
+        // touchMultiplier: 1,  // Hệ số touch
+        prevent: true,
+        smoothTouch: false,  // Tắt smooth touch nếu cần native hơn (tùy chỉnh theo test)
+        // gestureOrientation: 'vertical',  // Hướng cử chỉ
     });
     lenis.on('scroll', ({ scroll, limit, velocity, direction, progress }) => {
-        ScrollTrigger.update();
+        ScrollTrigger.update;
     })
-    gsap.ticker.add(update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
     window.addEventListener('resize', resize);
     lenis.scrollTo(0);
@@ -174,9 +165,7 @@
     $('.onePageNav .scroll-link').on('click', function(e) {
         e.preventDefault();
         const getId = $(this).attr('href');
-        const offset = $(getId).offset().top
-        console.log(offset);
-        lenis.scrollTo(offset, {
+        lenis.scrollTo(getId, {
             duration: 0
         });
     });
@@ -206,7 +195,7 @@
                         wrap.animate({ scrollLeft: data[key].offset }, 300);
                     },
                 });
-    
+
                 ScrollTrigger.create({
                     trigger: data[key].id,
                     start: 'bottom bottom-=30%',
@@ -224,6 +213,7 @@
                 });
             });
 
+
             $('.header__humberger').on('click', function() {
                 $('.header').toggleClass('header--showMb');
             });
@@ -238,7 +228,7 @@
                 $(this).addClass(getClass);
             })
         }
-        
+
         if ( ww >= 768 && ww < 1200) {
             $('[data-md-wow-delay]').each(function() {
                 var getTime = $(this).attr('data-md-wow-delay');
@@ -287,18 +277,18 @@
         });
         wow.init();
     }
-    
+
     function dataImageMobileUrl() {
         var update = function() {
             var ww = $(window).outerWidth();
             if(ww < 768) {
-                $('[data-img-mb').each(function() {
+                $('[data-img-mb]').each(function() {
                     var self = $(this),
                         url = self.attr('data-img-mb');
                     self.attr('src', url);
                 });
-    
-                $('[data-bg-mb').each(function() {
+
+                $('[data-bg-mb]').each(function() {
                     var self = $(this),
                         url = self.attr('data-bg-mb');
                     self.css('background-image', 'url('+url+')');
@@ -315,7 +305,7 @@
                         url = self.attr('data-img-pc');
                     self.attr('src', url);
                 });
-    
+
                 $('[data-bg-pc]').each(function() {
                     var self = $(this),
                         url = self.attr('data-bg-pc');
@@ -335,7 +325,7 @@
                         url = self.attr('data-img-pcc');
                     self.attr('src', url);
                 });
-    
+
                 $('[data-bg-pcc]').each(function() {
                     var self = $(this),
                         url = self.attr('data-bg-pcc');
@@ -432,7 +422,7 @@
                         self.attr('src', getSrc);
                         self.closest('.lazyloading').addClass('loaded');
                     };
-    
+
                     ScrollTrigger.create({
                         trigger: self,
                         start: `top-=${wh} bottom`,
@@ -474,7 +464,7 @@
                         self.attr('src', getSrc);
                         self.closest('.lazyloading').addClass('loaded');
                     };
-    
+
                     ScrollTrigger.create({
                         trigger: self,
                         start: `top-=${wh} bottom`,
@@ -506,7 +496,7 @@
     function headerJs() {
         const header = $('.header');
         const megamenu = $('.menuMobile');
-        
+
         if(header.length) {
             var headeroom = new Headroom(document.querySelector("header"), {
                 tolerance : 4,
@@ -539,11 +529,11 @@
                     // $('body').addClass('body-fix-scroll');
                 }
             });
-            
+
             megamenu.find('.menuMobile__bg').on('click', function() {
                 btn.trigger('click');
             });
-            
+
             megamenu.find('li.menu-has-children > a').on('click', function(e){
                 e.preventDefault();
                 const el = $(this);
@@ -606,12 +596,12 @@
                 var panel = self.find('.accordion__panel'),
                     title = panel.find('.accordion__title'),
                     dataFirst = self.attr('data-first');
-                
+
                 title.on('click', function() {
                     var el = $(this),
-                    _closest = el.closest('.accordion'),
-                    _parant = el.closest('.accordion__panel'),
-                    _content = _parant.find('.accordion__content');
+                        _closest = el.closest('.accordion'),
+                        _parant = el.closest('.accordion__panel'),
+                        _content = _parant.find('.accordion__content');
 
                     if( dataFirst ) {
                         if( _parant.hasClass('show') ) {
@@ -692,7 +682,7 @@
                 const offsetTop = $(getId).offset().top;
                 const getHeaderH = $('.header__wrap').outerHeight() + 10;
                 $('html, body').animate({scrollTop:  Math.floor(offsetTop-getHeaderH) }, 500);
-                
+
                 if( $('.header').hasClass('header--showmenu') ) {
                     $('.header__humberger').trigger('click');
                 }
@@ -705,8 +695,8 @@
             $(this).parent().toggleClass('show');
         });
 
-        $(document).click(function(e){ 
-            var target = e.target; 
+        $(document).click(function(e){
+            var target = e.target;
             if (!$(target).is('.select-lang__label') && !$(target).parents().is('.select-lang__label')){
                 $('.select-lang').removeClass('show');
             }
@@ -714,50 +704,9 @@
     }
 
     // new
-    function selectCustom() {
-        const wrap = $('.select-custom');
+    function homeDuAnJs() {
+        const wrap = $('.sec-homeQuyMo');
         if( wrap.length ) {
-            wrap.find('select').each(function() {
-                new SlimSelect({
-                    select: $(this)[0],
-                    settings: {
-                        showSearch: false,
-                    }
-                })
-            });
-        }
-    }
-    
-    function loadingVideoJs() {
-        const list = $('[data-load-video]');
-        if( list.length ) {
-            list.each(function() {
-                const self = $(this);
-                const getSrc = self.attr('data-load-video');
-                const video = self.parent();
-
-                const loadVideo = () => {
-                    self.attr('src', getSrc);
-                    video[0].load();
-                    video[0].play();
-                };
-
-                ScrollTrigger.create({
-                    trigger: self.parent(),
-                    start: `top-=${wh}px bottom`,
-                    onEnter: loadVideo,
-                    onEnterBack: loadVideo,
-                    invalidateOnRefresh: true,
-                });
-            });
-        }
-    }
-
-    function homeChiNhanhJs() {
-        const wrap = $('.sec-homeChiNhanh');
-
-        if( wrap.length ) {
-            const itemDom = wrap.find('.item-duan');
             const slideDom = wrap.find('.swiper');
             const slideBtnGropu = slideDom.find('.swiper-btn');
             if( ww > 1199 ) {
@@ -767,12 +716,11 @@
                     freeMode: true,
                     loop: false,
                     allowTouchMove: false,
-                    allowTouchMove: false, // Tắt swipe tay
                     simulateTouch: false,
                     watchSlidesProgress: true,
                     noSwiping: true,
                 });
-    
+
                 let totalWidth = 0;
                 let fixWidthRun = 0;
                 let offsetTop = 0;
@@ -781,19 +729,18 @@
                 const updateTotalWidth = () => {
                     totalWidth = swiper.wrapperEl.scrollWidth;
                     fixWidthRun = totalWidth - swiper.width;
-                    offsetTop = itemDom.offset().top;
-                    offsetTopMax = offsetTop + itemDom.outerHeight() - wh;
+                    offsetTop = wrap.offset().top;
+                    offsetTopMax = offsetTop + wrap.outerHeight() - wh;
                 };
                 updateTotalWidth();
 
-
                 let getScrollPage = lenis.targetScroll;
-    
+
                 const prevBtn = slideDom.find('.btn-prev');
                 const nextBtn = slideDom.find('.btn-next');
-    
+
                 ScrollTrigger.create({
-                    trigger: wrap.find('.item-duan')[0],
+                    trigger: wrap.find('.item-wrap')[0],
                     start: "top top",
                     end: "bottom bottom",
                     scrub: 1,
@@ -805,12 +752,12 @@
                         if( progress === 0 ) {
                             prevBtn.addClass('disable');
                         }
-    
+
                         if ( progress < 1 && progress > 0) {
                             prevBtn.removeClass('disable')
                             nextBtn.removeClass('disable')
                         }
-    
+
                         if( progress === 1 ) {
                             nextBtn.addClass('disable');
                         }
@@ -828,7 +775,7 @@
                         // slideBtnGropu.removeClass('show');
                     }
                 });
-                
+
                 prevBtn.on('click', function(){
                     let diemcong = getScrollPage-swiper.width;
                     if( diemcong < offsetTop ) {
@@ -836,22 +783,21 @@
                     }
                     lenis.scrollTo(diemcong);
                 });
-    
+
                 nextBtn.on('click', function(){
                     let diemcong = getScrollPage+swiper.width;
                     if( diemcong > offsetTopMax ) {
                         diemcong = offsetTopMax;
                     }
-                    console.log(diemcong);
                     lenis.scrollTo(diemcong);
                 });
-    
+
                 // Resize
                 window.addEventListener('resize', () => {
                     updateTotalWidth();
                     ScrollTrigger.refresh();
                 });
-    
+
                 ScrollTrigger.addEventListener("refresh", () => {
                     updateTotalWidth();
                     swiper.update();
@@ -875,61 +821,107 @@
                     },
                 });
             }
-
         }
     }
-    
-    function bigBranchJs() {
-        const wrap = $('.sec-bigBranch');
-        if( wrap.length ) {
-            const infoSlide = () => {
-                const slideDom = wrap.find('.item-info .swiper');
-                const slide = new Swiper(slideDom[0], {
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    speed: 700,
-                    navigation: {
-                        prevEl: slideDom.find('.swiper-buttonCustom-prev')[0],
-                        nextEl: slideDom.find('.swiper-buttonCustom-next')[0]
-                    },
-                    pagination: {
-                        el: slideDom.find('.swiper-pagination')[0],
-                        clickable: true,
-                    },
-                    loop: true,
-                    on: {
-                        // click: function () {
-                        //     slide.slideNext();
-                        // },
-                    },
-                });
+
+    function hoverEffect() {
+        const container = document.getElementById('homeLichSu-container');
+        const list = document.getElementById('homeLichSu-list');
+        const items = document.querySelectorAll('.f-year');
+
+        if (items.length) {
+            const normalWidth = items[0].offsetWidth;
+            const heightItem = items[0].offsetHeight;
+            let chia1 = Math.floor((normalWidth / 4.83870968));
+            let chia2 = Math.floor((chia1 / 1.66666667));
+            let expandedWidth = normalWidth * 3;
+
+            if( window.windowWidth < 768 ) {
+                chia1 = Math.floor((normalWidth / 13.9583333));
+                chia2 = Math.floor((chia1 / 1.71428571));
+                expandedWidth  = normalWidth;
             }
-            infoSlide();
-        }
-    }
 
-    function detailInfoSlideJs() {
-        const wrap = $('.sec-detailInfo');
-        if( wrap.length && ww < 1200 ) {
-            const slideDom = wrap.find('.item-mobile .swiper');
-            slideDom.each(function() {
-                const self = $(this);
-                const slide = new Swiper(self[0], {
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    speed: 700,
-                    navigation: {
-                        prevEl: self.find('.swiper-buttonCustom-prev')[0],
-                        nextEl: self.find('.swiper-buttonCustom-next')[0]
-                    },
-                    pagination: {
-                        el: self.find('.swiper-pagination')[0],
-                        clickable: true,
-                    },
+            let isDragging = false;
+            let startX;
+            let scrollLeft;
+
+            items.forEach((item) => {
+                item.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${normalWidth - chia2}px 0, ${normalWidth}px ${chia1}px, ${normalWidth}px ${heightItem}px, 0px ${heightItem}px)`;
+
+                item.addEventListener('click', (e) => {
+                    item.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${normalWidth - chia2}px 0, ${normalWidth}px ${chia1}px, ${normalWidth}px ${heightItem}px, 0px ${heightItem}px)`;
+
+                    if( window.windowWidth > 767 ) {
+                        items.forEach(el => {
+                            el.style.width = `${normalWidth}px`;
+                            el.classList.remove('active');
+                        });
+                        item.style.width = `${expandedWidth}px`;
+                        item.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${expandedWidth - chia2}px 0, ${expandedWidth}px ${chia1}px, ${expandedWidth}px ${heightItem}px, 0px ${heightItem}px)`;
+                        item.classList.add('active');
+                    } else {
+                        items.forEach(el => {
+                            el.style.height = `${heightItem}px`;
+                            el.classList.remove('active');
+                        });
+                        item.style.height = `${expandedWidth}px`;
+                        item.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${normalWidth - chia2}px 0, ${normalWidth}px ${chia1}px, ${normalWidth}px ${normalWidth}px, 0px ${normalWidth}px)`;
+                        item.classList.add('active');
+                    }
                 });
-            })
+            });
+
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+                container.style.cursor = 'grabbing';
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+
+            ['mouseup', 'mouseleave'].forEach(event => {
+                container.addEventListener(event, () => {
+                    isDragging = false;
+                    container.style.cursor = 'grab';
+
+                    if( window.windowWidth > 767 ) {
+                        items.forEach(el => {
+                            el.style.width = `${normalWidth}px`;
+                            el.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${normalWidth - chia2}px 0, ${normalWidth}px ${chia1}px, ${normalWidth}px ${heightItem}px, 0px ${heightItem}px)`;
+                            el.classList.remove('active');
+                        });
+                    } else {
+                        items.forEach(el => {
+                            el.style.height = `${heightItem}px`;
+                            el.style.clipPath = `polygon(0 ${chia1}px, ${chia2}px 0, ${normalWidth - chia2}px 0, ${normalWidth}px ${chia1}px, ${normalWidth}px ${heightItem}px, 0px ${heightItem}px)`;
+                            el.classList.remove('active');
+                        });
+                    }
+                });
+            });
+
+            // Reset transform khi scroll (tránh lỗi khi item đang mở rộng)
+            container.addEventListener('scroll', () => {
+                if (!isDragging) {
+                    items.forEach(item => {
+                        if (parseFloat(item.style.width || 0) > normalWidth + 10) {
+                            item.dispatchEvent(new Event('mouseleave'));
+                            setTimeout(() => item.dispatchEvent(new Event('mouseenter')), 50);
+                        }
+                    });
+                }
+            });
         }
     }
+    hoverEffect();
 
     function popoverJs() {
         const triggers = document.querySelectorAll('.popover-trigger');
@@ -937,7 +929,7 @@
         // Hàm ẩn tất cả popover
         function hideAllPopovers() {
             document.querySelectorAll('.popover.show').forEach(popover => {
-            popover.classList.remove('show');
+                popover.classList.remove('show');
             });
         }
 
@@ -954,7 +946,7 @@
             const viewportWidth = window.innerWidth;
             if (left < 10) left = 10;
             if (left + popoverRect.width > viewportWidth - 10) {
-            left = viewportWidth - popoverRect.width - 10;
+                left = viewportWidth - popoverRect.width - 10;
             }
 
             popover.style.top = `${top}px`;
@@ -979,7 +971,6 @@
 
         document.addEventListener('click', hideAllPopovers);
 
-        // Ngăn popover tự ẩn khi click vào nó
         document.querySelectorAll('.popover').forEach(popover => {
             popover.addEventListener('click', e => e.stopPropagation());
         });
@@ -1019,109 +1010,88 @@
             });
         }
     }
-    
-    function counterJs() {
-        const wrap = $('.counterJs');
-        if( wrap.length ) {
-            wrap.each(function() {
-                const self = $(this);
-                const getTo = self.attr('data-to');
-                function loadImage () {
-                    self.countTo({
-                        to: getTo
-                    })
-                };
 
-                ScrollTrigger.create({
-                    trigger: self,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    onEnter: loadImage,
-                    onEnterBack: loadImage,
-                    invalidateOnRefresh: true,
-                });
-            });
+    const setdataYear  = (firstYear, nowYear) => {
+        const years = [];
+        for (let year = firstYear; year <= 2025; year++) {
+            years.push(year);
         }
+        const first = years[0];
+        const last = years.at(-1);
+        const middleOnly = years.slice(1, -1);
+        const middleThree = [];
+        const temp = [...middleOnly];
+        while (middleThree.length < 3) {
+            const randomIndex = Math.floor(Math.random() * temp.length);
+            middleThree.push(temp.splice(randomIndex, 1)[0]);
+        }
+        middleThree.sort((a, b) => a - b);
+        const result = [...middleThree, last];
+        return result;
     }
 
     function loadingJs() {
         const wrap = $('.loading');
-        let _timeout = 700;
+        let years = [];
+        let _timeout = 100;
         let _dur = 2.5;
         if(wrap.length) {
+            const yearDom = wrap.find('.num-run');
+            const getYear = yearDom.text();
+            const getYearData = yearDom.attr('data-now');
+            years = setdataYear(Number(getYear), Number(getYearData));
+
             if ((device.mobile() || device.tablet()) && device.orientation === 'portrait') {
                 _timeout = 600;
                 _dur = 1;
             }
-            console.log(_timeout);
             const tl = new TimelineMax();
-            tl.to('.loading__logo', 1, { });
+            tl.to(yearDom, {
+                duration: 0,
+                text: getYear,
+                ease: "none",
+            });
+            tl.to(yearDom, 1, { });
+            years.forEach((item) => {
+                tl.to(yearDom, 0.3, {
+                    onStart: () => {
+                        yearDom.text(item);
+                    }
+                });
+            });
+            tl.to(yearDom, 0.3, { });
             tl.to('.loading__logo', 0.3, { autoAlpha: 0 });
             tl.to('.loading__inner', _dur, { width: '100%', ease: 'none' });
             tl.to('.loading__inner', _dur, {
-                scale: 6.3, z: 10, transformOrigin: 'bottom center', ease: 'none',
+                scale: 5, z: 10, transformOrigin: 'bottom center', ease: 'none',
                 onStart: () => {
+                    gsap.to('.loading__body', 0.3, { autoAlpha: 0 });
                     setTimeout(() => {
+                        $('body').removeClass('body-fix-scroll');
                         wowLoadDoneJs();
                         lenis.start();
                     }, _timeout);
                 },
                 onComplete: () => {
-                    // wrap.remove();
+                    wrap.remove();
                 }
             }, `-=${_dur}`);
-        } else {
-            wowLoadDoneJs();
-            lenis.start();
         }
     }
-
-    // function popupJs() {
-    //     $('[data-popup]').on('click', function(e) {
-    //         e.preventDefault();
-    //         const self = $(this);
-    //         const getId = self.attr('href');
-    //         $(getId).addClass('show-popup');
-    //         $('body').addClass('body-fix-scroll');
-    //         lenis.stop();
-    //     });
-
-    //     $('.popup__close').on('click', function() {
-    //         $('.popup__bg').trigger('click')
-    //     });
-
-    //     $('.popup__bg').on('click', function() {
-    //         $(this).closest('.popup').removeClass('show-popup');
-    //         $('body').removeClass('body-fix-scroll');
-    //         lenis.start();
-    //     });
-    // }
-
     wowReponsiveJs()
     dataImageMobileUrl();
-    // lazyLoading();
     headerJs();
     accordionJs();
     tabboxJs();
-    bigBranchJs();
-    detailInfoSlideJs();
-    // roomBoxJs();
     selectLangJs();
     backToTopJs();
     popoverJs();
     loadingJs();
-    // popupJs();
-    // scrollToId();
 
     $(window).on('load', function() {
-        // loadingVideoJs();
-        onePageNav();
-        homeChiNhanhJs();
+        homeDuAnJs();
         dataStickyFix();
-        counterJs();
-        if( ww > 1199 ) {
-            // var cursor = new MouseFollower();
-        }
+        onePageNav();
         setTimeout(function() {
             $('body').addClass('body-load-done');
         }, 20)

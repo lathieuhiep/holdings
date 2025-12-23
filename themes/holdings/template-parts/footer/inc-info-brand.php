@@ -14,9 +14,9 @@ $social_links = holdings_get_opt(ContactOptions::class)?->get_opt_contact_social
     <div class="row">
         <div class="col-xl-3">
             <div class="item-info wow fadeInUp">
-                <?php esc_html_e('THAI HOANG Residence', 'holdings'); ?>
+                <?php esc_html_e('THAI HOANG HOSPITALITY', 'holdings'); ?>
                 <p>
-                    <?php esc_html_e('© Copyright 2018 thaihoangholdings.com', 'holdings'); ?>
+                    <?php esc_html_e('© Copyright 2018 thaihoangresidence.com', 'holdings'); ?>
                     <br>
                     <?php esc_html_e('All Rights Reserved.', 'holdings'); ?>
                 </p>

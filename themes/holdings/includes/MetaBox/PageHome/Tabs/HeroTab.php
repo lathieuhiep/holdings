@@ -8,34 +8,21 @@ defined('ABSPATH') || exit;
 
 final class HeroTab
 {
-    private const KEY_BG_PC = 'home_hero_bg_pc';
-    private const KEY_BG_MB = 'home_hero_bg_mb';
-    private const KEY_LOGO  = 'home_hero_logo';
-    private const KEY_TEXT  = 'home_hero_text';
+    private const META_KEY = 'home_hero';
+    private const META_BG_PC  = self::META_KEY . '_bg_pc';
+    private const META_BG_MB  = self::META_KEY . '_bg_mb';
+    private const META_LOGO   = self::META_KEY . '_logo';
 
     /**
      * Fields definition
+     * return array<Field>
      */
     public static function fields(): array
     {
         return [
-            Field::make('image', self::KEY_BG_PC, esc_html__('Ảnh Desktop', 'holdings'))
-                ->set_value_type('url'),
-
-            Field::make('image', self::KEY_BG_MB, esc_html__('Ảnh Mobile', 'holdings'))
-                ->set_value_type('url'),
-
-            Field::make('image', self::KEY_LOGO, esc_html__('Logo', 'holdings'))
-                ->set_help_text(
-                    esc_html__('SVG or image logo in hero section', 'holdings')
-                )
-                ->set_value_type('url'),
-
-            Field::make('textarea', self::KEY_TEXT, esc_html__('Mô tả', 'holdings'))
-                ->set_rows(3)
-                ->set_default_value(
-                    esc_html__('Chuỗi căn hộ dịch vụ cao cấp cho khách hàng Nhật Bản', 'holdings')
-                ),
+            Field::make('image', self::META_BG_PC, esc_html__('Background PC', 'extend-site')),
+            Field::make('image', self::META_BG_MB, esc_html__('Background Mobile', 'extend-site')),
+            Field::make('image', self::META_LOGO, esc_html__('Logo', 'extend-site')),
         ];
     }
 
@@ -45,10 +32,9 @@ final class HeroTab
     public static function get(int $post_id): array
     {
         return [
-            'bg_pc' => carbon_get_post_meta($post_id, self::KEY_BG_PC),
-            'bg_mb' => carbon_get_post_meta($post_id, self::KEY_BG_MB),
-            'logo'  => carbon_get_post_meta($post_id, self::KEY_LOGO),
-            'text'  => carbon_get_post_meta($post_id, self::KEY_TEXT),
+            'bg_pc' => carbon_get_post_meta($post_id, self::META_BG_PC),
+            'bg_mb' => carbon_get_post_meta($post_id, self::META_BG_MB),
+            'logo'  => carbon_get_post_meta($post_id, self::META_LOGO),
         ];
     }
 }
