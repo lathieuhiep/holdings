@@ -13277,3 +13277,15 @@ textarea {
     margin-right: auto;
   }
 }
+
+@media (min-width: 783px) {
+  #wpadminbar + .page-wrapper .header__wrap {
+    top: 32px;
+  }
+}
+
+@media (max-width: 782px) {
+  #wpadminbar + .page-wrapper .header__wrap {
+    top: 46px;
+  }
+}
