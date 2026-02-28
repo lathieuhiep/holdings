@@ -10,7 +10,7 @@ get_template_part('template-parts/pages/home/inc', 'hero');
 get_template_part('template-parts/pages/home/inc', 'about');
 ?>
 
-<section class="section sec-homeQuyMo" id="id-duan">
+<section class="section sec-homeQuyMo">
     <?php
     get_template_part('template-parts/pages/home/inc', 'company-scale');
     get_template_part('template-parts/pages/home/inc', 'business');

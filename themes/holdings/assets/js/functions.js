@@ -1032,44 +1032,55 @@
 
     function loadingJs() {
         const wrap = $('.loading');
-        let years = [];
         let _timeout = 100;
         let _dur = 2.5;
+
         if(wrap.length) {
             const yearDom = wrap.find('.num-run');
-            const getYear = yearDom.text();
-            const getYearData = yearDom.attr('data-now');
-            years = setdataYear(Number(getYear), Number(getYearData));
+            const startYear = Number(yearDom.text()); // 1999
+            const endYear = Number(yearDom.attr('data-now')); // 2025
 
             if ((device.mobile() || device.tablet()) && device.orientation === 'portrait') {
                 _timeout = 600;
                 _dur = 1;
             }
+
             const tl = new TimelineMax();
-            tl.to(yearDom, {
-                duration: 0,
-                text: getYear,
-                ease: "none",
+
+            // Bước 1: Hiển thị số bắt đầu và giữ nguyên trong 0.8 giây
+            tl.set(yearDom, { text: startYear });
+            tl.to({}, 0.6, {}); // Đây là một lệnh "chờ" (empty tween)
+
+            // Bước 2: Bắt đầu hiệu ứng đếm số (Count-up)
+            let counter = { val: startYear };
+
+            tl.to(counter, 3.5, { // Tăng lên 2.5 giây để nhìn rõ từng số +1
+                val: endYear,
+                roundProps: "val",
+                ease: "power1.inOut", // Chạy chậm lúc đầu, nhanh ở giữa, chậm lại ở cuối
+                onUpdate: function() {
+                    yearDom.text(Math.floor(counter.val));
+                }
             });
-            tl.to(yearDom, 1, { });
-            years.forEach((item) => {
-                tl.to(yearDom, 0.3, {
-                    onStart: () => {
-                        yearDom.text(item);
-                    }
-                });
-            });
-            tl.to(yearDom, 0.3, { });
+
+            // Bước 3: Nghỉ một chút ở số cuối cùng (2025) trước khi biến mất
+            tl.to(yearDom, 0.5, { });
+
+            // Các hiệu ứng chuyển cảnh tiếp theo
             tl.to('.loading__logo', 0.3, { autoAlpha: 0 });
             tl.to('.loading__inner', _dur, { width: '100%', ease: 'none' });
+
             tl.to('.loading__inner', _dur, {
-                scale: 5, z: 10, transformOrigin: 'bottom center', ease: 'none',
+                scale: 5,
+                z: 10,
+                transformOrigin: 'bottom center',
+                ease: 'none',
                 onStart: () => {
                     gsap.to('.loading__body', 0.3, { autoAlpha: 0 });
                     setTimeout(() => {
                         $('body').removeClass('body-fix-scroll');
-                        wowLoadDoneJs();
-                        lenis.start();
+                        if (typeof wowLoadDoneJs === "function") wowLoadDoneJs();
+                        if (typeof lenis !== "undefined") lenis.start();
                     }, _timeout);
                 },
                 onComplete: () => {

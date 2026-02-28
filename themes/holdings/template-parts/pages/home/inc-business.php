@@ -25,7 +25,7 @@ if ( empty($activities['items']) ) {
 </svg>
 
 <!--Business Activities-->
-<div class="item-wrap wow fadeInUp">
+<div class="item-wrap wow fadeInUp" id="id-duan">
     <div class="item-sticky">
         <div class="container">
             <div class="row">
