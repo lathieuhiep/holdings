@@ -27,8 +27,7 @@ class FooterOptions extends OptionBase
             // brand media gallery
             Field::make( 'complex', self::BRAND_GALLERY, esc_html__( 'Nhãn hiệu', 'extend-site' ) )
                 ->add_fields( [
-                    Field::make( 'image', 'image', esc_html__( 'Ảnh', 'extend-site' ) )
-                        ->set_required( true ),
+                    Field::make( 'image', 'image', esc_html__( 'Ảnh', 'extend-site' ) ),
 
                     Field::make( 'text', 'url', esc_html__( 'Link URL', 'extend-site' ) )
                         ->set_attribute( 'type', 'url' )
