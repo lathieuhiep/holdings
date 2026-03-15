@@ -1,3 +1,11 @@
+<?php
+
+use ExtendSite\Options\GeneralOptions;
+
+$timeline = holdings_get_opt(GeneralOptions::class)?->get_timeline() ?? [];
+$start_year = $timeline['start_year'] ?? 1999;
+$end_year = $timeline['end_year'] ?? 2025;
+?>
 <div class="loading">
     <div class="loading__inner">
         <svg viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +22,7 @@
                 <div class="col-md-8 offset-md-2 col-xl-4 offset-xl-4">
                     <div class="logo-year">
                         <span>Build</span>
-                        <strong data-now="2025" class="num-run">1999</strong>
+                        <strong data-now="<?php echo esc_attr( $end_year ); ?>" class="num-run"><?php echo esc_html($start_year) ?></strong>
                     </div>
                 </div>
             </div>
