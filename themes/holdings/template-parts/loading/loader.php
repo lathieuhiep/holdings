@@ -21,7 +21,7 @@ $end_year = $timeline['end_year'] ?? 2025;
             <div class="row">
                 <div class="col-md-8 offset-md-2 col-xl-4 offset-xl-4">
                     <div class="logo-year">
-                        <span>Build</span>
+                        <span><?php esc_html_e('Built', 'holdings'); ?></span>
                         <strong data-now="<?php echo esc_attr( $end_year ); ?>" class="num-run"><?php echo esc_html($start_year) ?></strong>
                     </div>
                 </div>
