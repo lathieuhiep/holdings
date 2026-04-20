@@ -59,6 +59,14 @@ final class BusinessActivitiesTab
                     ),
 
                     Field::make(
+                        'text',
+                        'link',
+                        esc_html__('Liên kết tùy chỉnh', 'extend-site')
+                    )->set_help_text(
+                        esc_html__('Nhập URL cho box này. Ví dụ: /linh-vuc-hoat-dong hoặc https://example.com', 'extend-site')
+                    ),
+
+                    Field::make(
                         'complex',
                         'list',
                         esc_html__('Danh sách nội dung', 'extend-site')
@@ -109,6 +117,7 @@ final class BusinessActivitiesTab
                     'image' => $item['image'] ?? 0,
                     'title' => $item['title'] ?? '',
                     'subtitle' => $item['subtitle'] ?? '',
+                    'link' => $item['link'] ?? '',
                     'list' => $list,
                 ];
             }

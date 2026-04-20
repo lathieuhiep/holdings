@@ -11615,6 +11615,13 @@ textarea {
   padding: 1.25rem;
 }
 
+.duanBox__link {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: block;
+}
+
 .duanBox__title h3 {
   font-size: 1.5rem;
   font-weight: 100;
