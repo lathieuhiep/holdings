@@ -441,6 +441,10 @@ legend {
     font-size: 1.5rem;
   }
 }
+legend {
+  line-height: inherit;
+}
+
 legend + * {
   clear: left;
 }
@@ -11554,6 +11558,7 @@ textarea {
 }
 
 .duanBox {
+  display: block;
   position: relative;
   aspect-ratio: 800/817;
   overflow: hidden;
@@ -13057,7 +13062,7 @@ textarea {
 }
 @media (min-width: 1200px) {
   .sec-homeLichSu .item-list__scroll .f-year {
-    width: 9.375rem;
+    width: 14.0625rem;
     height: 43.75rem;
   }
   .sec-homeLichSu .item-list__scroll .f-year__body {

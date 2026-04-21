@@ -588,20 +588,22 @@
         }
     }
 
-    function accordionJs() {
+     function accordionJs() {
         var wrap = $('.accordion');
         if( wrap.length ) {
+            let isAnimating = false;
+
             wrap.each(function() {
                 var self = $(this);
                 var panel = self.find('.accordion__panel'),
                     title = panel.find('.accordion__title'),
                     dataFirst = self.attr('data-first');
-
+                
                 title.on('click', function() {
                     var el = $(this),
-                        _closest = el.closest('.accordion'),
-                        _parant = el.closest('.accordion__panel'),
-                        _content = _parant.find('.accordion__content');
+                    _closest = el.closest('.accordion'),
+                    _parant = el.closest('.accordion__panel'),
+                    _content = _parant.find('.accordion__content');
 
                     if( dataFirst ) {
                         if( _parant.hasClass('show') ) {
@@ -618,12 +620,15 @@
                                 _parant.addClass('show');
                             });
                         }
+                        
                     }else {
+                        // isAnimating = true;
                         if( !_parant.hasClass('active')) {
                             if( _parant.hasClass('show') ) {
                                 _closest.find('.accordion__panel').removeClass('show');
                                 _content.slideUp(function()  {
                                     _content.removeClass('active');
+                                    // isAnimating = false;
                                 });
                             }else {
                                 panel.removeClass('active');
@@ -637,7 +642,14 @@
                         }
                     }
                 });
+
+                title.on('mouseenter', function() {
+                    // if (isAnimating) return;
+                    $(this).trigger('click');
+                });
+
             });
+
 
             const fixAcc1 = $('.sec-HLVCGia');
             if( fixAcc1.length ) {
@@ -651,6 +663,7 @@
             }
         }
     }
+
 
     function backToTopJs() {
         var wrap = $('.btn-backtotop');
