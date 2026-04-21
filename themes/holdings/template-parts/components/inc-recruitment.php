@@ -112,7 +112,7 @@ $email = holdings_get_opt(ContactOptions::class)?->get_opt_contact_email() ?? 't
                         <div class="f-entry wow fadeInUp">
                             <?php echo $recruitment_content; ?>
                         </div>
-                        <ul class="f-list wow fadeInUp">
+                        <!-- <ul class="f-list wow fadeInUp">
                             <li>
                                 <span><?php esc_html_e('Email', 'holdings'); ?></span>
                                 <a href="mailto:<?php echo esc_attr( $email )?>"><?php echo esc_html( $email )?></a>
@@ -121,7 +121,7 @@ $email = holdings_get_opt(ContactOptions::class)?->get_opt_contact_email() ?? 't
                                 <span><?php esc_html_e('Phone', 'holdings'); ?></span>
                                 <a href="tel:<?php echo esc_attr( holdings_preg_replace_ony_number($phone) ) ?>"><?php echo esc_html( $phone ); ?></a>
                             </li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </div>
